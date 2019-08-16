@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Buyer</title>
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+     <script src="./web3.js/dist/web3.min.js"></script> 
+    <!--<script src="./index.js"></script> -->
+
+</head>
+<body>
+    <div class="container">
+
+        <h1>Buyer Point</h1>
+
+        <h1 id="buyer"></h1>
+
+        <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+
+        <label for="name" class="col-lg-2 control-label">Buyer Address</label>
+        <input id="address" type="text">
+
+
+        <label for="name" class="col-lg-2 control-label">Price</label>
+        <input id="price" type="text" placeholder="50">
+
+        <button id="button">Pay</button>
+
+    </div>
+
+    <div>
+        <table style="width:15%">
+  <tr>
+    <th>Model Name</th>
+    <th>Price</th> 
+    <th>Buy</th>
+  </tr>
+  <tr>
+    <td>LeNet Image classification model</td>
+    <td>$50</td> 
+    <td><button id="button">Buy</button></td>
+  </tr>
+  <tr>
+    <td>YOLO Detection model</td>
+    <td>$99</td> 
+    <td><button id="button">Buy</button></td>
+  </tr>
+  <tr>
+    <td>Predicting the next word using RNN</td>
+    <td>$40</td> 
+    <td><button id="button">Buy</button></td>
+  </tr>
+  <tr>
+    <td>IRIS Dataset</td>
+    <td>$49</td> 
+    <td><button id="button">Buy</button></td>
+  </tr>
+  <tr>
+    <td>Movie Prediction dataset</td>
+    <td>$99</td> 
+    <td><button id="button">Buy</button></td>
+  </tr>
+</table>
+    </div>
+
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script>
+        //Web3 = require('web3');
+        if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+        } else {
+        // set the provider you want from Web3.providers
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8887"));
+        }
+
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+
+        var fileContract = web3.eth.contract([
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "seller",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_seller",
+				"type": "address"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"name": "setFileInfo",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "fileinfos",
+		"outputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_seller",
+				"type": "address"
+			}
+		],
+		"name": "getFileInfo",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"name": "files",
+		"type": "event"
+	}
+]);
+        //var address = web3.eth.getBalance('0x88f87d8c32cdba2697079e55ffe046a03d9da12c'); //owner's address
+        var contractAddress = fileContract.at('0x09f418c80289c9052bc3842d8b24ab1967625aaa');
+
+        console.log(contractAddress);
+
+        var filesEvent = contractAddress.files();
+
+        filesEvent.watch(function(error, result) {
+            if (!error){
+                $("#loader").hide();
+                $("#buyer").html(result.args.address, + result.args.price);
+            } else{
+                $("#loader").hide();
+                console.log(error);
+            }
+        });
+
+
+        $("#button").click(function(){
+            $("#loader").show();
+            contractAddress.setFileInfo($("#address").val(), $("#price").val(), (err, res) =>{
+                if (err){
+                    $("#loader").hide();
+                    console.log(err);
+                }
+            })
+
+        });
+
+
+    </script>
+
+</body>
+</html>

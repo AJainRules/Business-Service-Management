@@ -1,2 +1,2 @@
-# Business-Service-Management
-This is a project using solidity on ethereum  blockchain platform which design and deployed smart contrcats.
+# dataset-info-smart-contract
+Smart contract to sell AI data sets on blockchain (Solidity v0.4.25)

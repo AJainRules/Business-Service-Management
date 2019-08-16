@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>File Info</title>
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+     <script src="./web3.js/dist/web3.min.js"></script> 
+    <!--<script src="./index.js"></script> -->
+
+</head>
+<body>
+    <div class="container">
+
+        <h1>Sellers' Point</h1>
+
+        <h1 id="sellerspoint"></h1>
+
+        <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+
+        <label for="name" class="col-lg-2 control-label">Seller Address</label>
+        <input id="address" type="text">
+
+
+        <label for="name" class="col-lg-2 control-label">Product Name</label>
+        <input id="name" type="text">
+
+        <label for="name" class="col-lg-2 control-label">Descrition</label>
+        <input id="description" type="text">
+
+        <label for="name" class="col-lg-2 control-label">Price</label>
+        <input id="price" type="text">
+
+        <button id="button">Add File</button>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script>
+
+        /*if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+        } else {
+        // set the provider you want from Web3.providers
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8887"));
+        console.log("Web3 working");
+        }
+
+        web3.eth.defaultAccount = web3.eth.accounts[0]; */
+
+var fileContract = web3.eth.contract([
+
+
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "seller",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_seller",
+				"type": "address"
+			},
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"name": "setFileInfo",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "fileinfos",
+		"outputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_seller",
+				"type": "address"
+			}
+		],
+		"name": "getFileInfo",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"name": "files",
+		"type": "event"
+	}
+
+
+    
+]);
+        //var address = web3.eth.getBalance('0x88f87d8c32cdba2697079e55ffe046a03d9da12c'); //owner's address
+        var contractAddress = fileContract.at('0xc920aa96ddc4b1b4c4f4cf708ecd52b476f49368');
+;
+        var MyContract = web3.eth.contract(ContractABI);
+        var contractInstance = MyContract.at(contractAddress);
+
+        //var filesEvent = contractInstance.Files();
+
+            function startListeing(){
+            document.getElementById('button').addEventListener('click', function() {
+                contractInstance.setFileInfo($("#address").val(), $("#name").val(), $("#description").val(), $("#price").val(), 
+                    (error, result) =>{
+                if (error){
+                    $("#loader").hide();
+                    console.log(error);
+                }else{
+
+                    console.log(result);
+                    //$("#sellerspoint").html(result[0]);
+                }
+        })
+            
+    });
+
+}
+
+        function getEvent(){
+        document.getElementById("button").addEventListener('click', function(){
+        contractInstance.getFileInfo('0xb63583d711e203389cff0ec740bac26ca456eef7',{fromBlock:11},function(error, result){
+            if(error){
+                console.log(error);
+                $("#sellerspoint").html('nello');
+            }else{
+                $("#sellerspoint").html('hello');
+                console.log("Execution successful !!");
+            }
+        });
+        })
+    }    
+
+        window.addEventListener('load', function(){
+            if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+        } else {
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8887"));
+        }
+
+        //web3.eth.defaultAccount = web3.eth.accounts[0];
+        startListeing();
+        getEvent();
+
+        })
+
+
+    </script>
+
+</body>
+</html>
